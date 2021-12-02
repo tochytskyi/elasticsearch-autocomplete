@@ -277,3 +277,96 @@ Response:
     }
 }
 ```
+
+7. Try to search for words like `adventure` with 3 mistakes and with `fuzziness` param from `1` to `3`
+```BASH
+curl --location --request POST 'http://127.0.0.1:9201/words/_search' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "_source": "suggest",
+    "suggest": {
+        "harry_suggest": {
+            "prefix": "appl",
+            "completion": {
+                "field": "afvennur",
+                "fuzzy": {
+                    "fuzziness": 1
+                }
+            }
+        }
+    }
+}'
+```
+- `fuzziness=1` - no results
+- `fuzziness=2` and `fuzziness=3` - 5 documents
+```JSON
+{
+    "took": 7,
+    "timed_out": false,
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 0,
+            "relation": "eq"
+        },
+        "max_score": null,
+        "hits": []
+    },
+    "suggest": {
+        "harry_suggest": [
+            {
+                "text": "afvennur",
+                "offset": 0,
+                "length": 8,
+                "options": [
+                    {
+                        "text": "adventure",
+                        "_index": "words",
+                        "_type": "_doc",
+                        "_id": "43685",
+                        "_score": 1.0,
+                        "_source": {}
+                    },
+                    {
+                        "text": "adventured",
+                        "_index": "words",
+                        "_type": "_doc",
+                        "_id": "124988",
+                        "_score": 1.0,
+                        "_source": {}
+                    },
+                    {
+                        "text": "adventureful",
+                        "_index": "words",
+                        "_type": "_doc",
+                        "_id": "72955",
+                        "_score": 1.0,
+                        "_source": {}
+                    },
+                    {
+                        "text": "adventurement",
+                        "_index": "words",
+                        "_type": "_doc",
+                        "_id": "163395",
+                        "_score": 1.0,
+                        "_source": {}
+                    },
+                    {
+                        "text": "adventurer",
+                        "_index": "words",
+                        "_type": "_doc",
+                        "_id": "223258",
+                        "_score": 1.0,
+                        "_source": {}
+                    }
+                ]
+            }
+        ]
+    }
+}
+```
