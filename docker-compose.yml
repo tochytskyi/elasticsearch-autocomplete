@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  app:
+    image: elastic01parser
+    container_name: elastic01parser
+    build:
+      context: .
+    ports:
+      - "5002:5000"
+    volumes:
+      - "./:/go/src/app"
+    networks:
+      - elastic
+    depends_on:
+      - elastic01
+
+  elastic01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.2
+    container_name: elastic01
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elastic01data:/usr/share/elasticsearch/data
+    ports:
+      - 9201:9200
+    networks:
+      - elastic
+
+volumes:
+  elastic01data:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge
